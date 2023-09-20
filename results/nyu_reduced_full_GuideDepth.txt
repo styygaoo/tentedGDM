@@ -1,0 +1,2 @@
+s[PyTorch], s[tensorRT], RMSE,MAE,REL,Lg10,Delta1,Delta2,Delta3
+0.013,0.002,2.195,1.980,0.660,0.506,0.018,0.052,0.119

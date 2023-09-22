@@ -42,6 +42,8 @@ class Tent(nn.Module):
 @torch.jit.script
 def softmax_entropy(x: torch.Tensor) -> torch.Tensor:
     """Entropy of softmax distribution from logits."""
+    # print("x: ", x)
+    print("x.softmax(1): ", x.softmax(1))
     return -(x.softmax(1) * x.log_softmax(1)).sum(1)
 
 
@@ -54,8 +56,13 @@ def forward_and_adapt(x, model, optimizer):
     # forward
     outputs = model(x)
     # adapt
-    loss = softmax_entropy(outputs).mean(0)
-    loss.backward()
+    print("softmax_entropy(outputs).shape: ", softmax_entropy(outputs).shape)
+    print(softmax_entropy(outputs).mean(0).shape)
+    print("softmax_entropy(outputs).mean(0).mean(0).shape: ",softmax_entropy(outputs).mean(0).mean(0).shape)
+    print("softmax_entropy(outputs).mean(0).mean(0).mean(0).shape: ",softmax_entropy(outputs).mean(0).mean(0).mean(0).shape)
+    print("softmax_entropy(outputs).mean(0).mean(0).mean(0): ",softmax_entropy(outputs).mean(0).mean(0).mean(0))
+    loss = softmax_entropy(outputs).mean(0).mean(0).mean(0)
+    loss.backward()              # loss.backward() https://discuss.pytorch.org/t/loss-backward-raises-error-grad-can-be-implicitly-created-only-for-scalar-outputs/12152/9
     optimizer.step()
     optimizer.zero_grad()
     return outputs
@@ -105,8 +112,8 @@ def configure_model(model):
             m.requires_grad_(True)
             # force use of batch stats in train and eval modes
             m.track_running_stats = False
-            m.running_mean = None
-            m.running_var = None
+            # m.running_mean = None
+            # m.running_var = None
     return model
 
 
